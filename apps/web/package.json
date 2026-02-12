@@ -1,0 +1,23 @@
+{
+  "name": "@app/web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 3000",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "clean": "rm -rf dist node_modules/.vite"
+  },
+  "dependencies": {
+    "@app/shared": "workspace:*",
+    "@app/tsconfig": "workspace:*",
+    "antd": "^5.24.2",
+    "@ant-design/icons": "^6.1.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.13.0"
+  }
+}

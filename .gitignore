@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.turbo/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.idea
+*.turbo
+.DS_Store
+*.trae
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Prisma
+apps/server/prisma/migrations/
+
+# Logs
+*.log
