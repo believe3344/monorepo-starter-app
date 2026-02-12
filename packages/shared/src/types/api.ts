@@ -1,5 +1,5 @@
 /** 统一 API 响应格式 */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   code: number;
   message: string;
   result: T;

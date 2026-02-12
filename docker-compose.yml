@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # ================================
+  # 1. 数据库: MySQL 8.0
+  # ================================
+  mysql:
+    image: mysql:8.0
+    container_name: monorepo-mysql
+    restart: unless-stopped
+    ports:
+      - '3306:3306' # 把 Docker 里的 3306 端口，映射到你 Mac 的 3306
+    environment:
+      # ⚠️ 记住这些密码，待会项目要用
+      MYSQL_ROOT_PASSWORD: root123 # root 用户密码
+      MYSQL_DATABASE: monorepo_starter # 自动创建的数据库名
+      TZ: Asia/Shanghai # 设置中国时区
+    command: --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql_data:/var/lib/mysql # 数据保存到电脑上，哪怕删了容器数据还在
+
+  # ================================
+  # 2. 缓存: Redis 7
+  # ================================
+  redis:
+    image: redis:7-alpine
+    container_name: monorepo-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379' # 映射端口 6379
+    environment:
+      TZ: Asia/Shanghai
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass redis123  # 设置连接密码为 redis123
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mysql_data:
+  redis_data:

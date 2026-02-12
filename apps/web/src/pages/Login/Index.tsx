@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 const Login: React.FC = () => {
   const navigate = useNavigate();
 
-  const onFinish = (values: { username: string; password: string }) => {
-    console.log('登录信息:', values);
+  const onFinish = (_values: { username: string; password: string }) => {
+    // TODO: 调用真实登录接口
     message.success('登录成功（模拟）');
     navigate('/');
   };
