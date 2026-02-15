@@ -1,14 +1,11 @@
-import { ConfigProvider } from 'antd';
-import zhCN from 'antd/locale/zh_CN';
+import '@/assets/css/base.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
-import router from './router';
+import 'uno.css';
+import App from './App';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ConfigProvider locale={zhCN}>
-      <RouterProvider router={router} />
-    </ConfigProvider>
+    <App />
   </StrictMode>,
 );

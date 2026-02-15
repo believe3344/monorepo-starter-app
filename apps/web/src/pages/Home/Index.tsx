@@ -1,11 +1,13 @@
 import { UserRole } from '@app/shared';
 import { Button, Space, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 const { Title, Paragraph } = Typography;
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div>
@@ -16,7 +18,7 @@ const Home: React.FC = () => {
       </Paragraph>
       <Space>
         <Button type="primary" onClick={() => navigate('/about')}>
-          了解更多
+          了解更多{t('common.add')}
         </Button>
       </Space>
     </div>

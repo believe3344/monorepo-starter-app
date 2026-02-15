@@ -36,9 +36,12 @@ export class UserController {
   @ApiQuery({ name: 'pageNum', required: false, type: Number, description: '页码' })
   @ApiQuery({ name: 'pageSize', required: false, type: Number, description: '每页条数' })
   async findAll(@Query('pageNum') pageNum?: number, @Query('pageSize') pageSize?: number) {
+    const MAX_PAGE_SIZE = 100;
     const pn = pageNum ? Number(pageNum) : 1;
     const ps = pageSize ? Number(pageSize) : 10;
-    const { list, pageinfo } = await this.userService.findAll(pn, ps);
+    const safePageNum = pn < 1 ? 1 : pn;
+    const safePageSize = ps < 1 ? 10 : Math.min(ps, MAX_PAGE_SIZE);
+    const { list, pageinfo } = await this.userService.findAll(safePageNum, safePageSize);
     return successWithPage(list, pageinfo);
   }
 

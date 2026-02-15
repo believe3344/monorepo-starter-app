@@ -1,7 +1,7 @@
 import { RedisService } from '@/common/redis/redis.service';
+import { PasswordService } from '@/common/services/password.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -10,6 +10,7 @@ export class UserService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly redis: RedisService,
+    private readonly passwordService: PasswordService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -20,7 +21,7 @@ export class UserService {
       throw new ConflictException('用户名已存在');
     }
 
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const hashedPassword = await this.passwordService.hash(createUserDto.password);
 
     const user = await this.prisma.user.create({
       data: {
@@ -103,7 +104,7 @@ export class UserService {
     await this.findOne(id);
 
     if (updateUserDto.password) {
-      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+      updateUserDto.password = await this.passwordService.hash(updateUserDto.password);
     }
 
     const user = await this.prisma.user.update({

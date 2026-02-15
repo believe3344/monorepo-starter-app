@@ -1,0 +1,32 @@
+{
+  "de": {
+    "title": "Hauptseite"
+  },
+  "en": {
+    "title": "Home"
+  },
+  "es": {
+    "title": "Inicio"
+  },
+  "fr": {
+    "title": "Accueil"
+  },
+  "ja": {
+    "title": "ホーム"
+  },
+  "ko": {
+    "title": "홈"
+  },
+  "pt": {
+    "title": "Página inicial"
+  },
+  "ru-RU": {
+    "title": "Главная страница"
+  },
+  "th": {
+    "title": "หน้าแรก"
+  },
+  "zh-CN": {
+    "title": "首页"
+  }
+}

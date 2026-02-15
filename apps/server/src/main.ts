@@ -1,10 +1,14 @@
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { PrismaClientExceptionFilter } from './common/filters/prisma-client-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+
+declare const module: any;
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -14,8 +18,17 @@ async function bootstrap() {
   // 全局前缀：所有接口以 /api 开头
   app.setGlobalPrefix('api');
 
+  // 启用版本控制 (如 /api/v1/...)
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
+
+  // 增强安全性
+  app.use(helmet());
+
   // 全局过滤器
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter(), new PrismaClientExceptionFilter());
 
   // 全局拦截器
   app.useGlobalInterceptors(new TransformInterceptor());
@@ -54,6 +67,11 @@ async function bootstrap() {
   await app.listen(port);
   logger.log(`🚀 Server running on http://localhost:${port}`);
   logger.log(`📖 Swagger docs: http://localhost:${port}/api-docs`);
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
 
 bootstrap();

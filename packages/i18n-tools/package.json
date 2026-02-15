@@ -1,0 +1,14 @@
+{
+  "name": "@app/i18n-tools",
+  "version": "1.0.0",
+  "description": "国际化工具集",
+  "type": "module",
+  "main": "./index.ts",
+  "scripts": {},
+  "peerDependencies": {
+    "papaparse": "^5.4.1",
+    "@types/papaparse": "^5.3.16",
+    "@types/node": "^24.3.0",
+    "typescript": "~5.8.3"
+  }
+}

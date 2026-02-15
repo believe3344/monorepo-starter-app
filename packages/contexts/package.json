@@ -1,0 +1,15 @@
+{
+  "name": "@app/contexts",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "peerDependencies": {
+    "react": "^19.2.0"
+  },
+  "dependencies": {
+    "@app/shared": "workspace:^",
+    "@app/utils": "workspace:^"
+  }
+}

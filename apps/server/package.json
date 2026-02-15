@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "nest start --watch",
+    "dev": "kill-port 4001 && nest start --watch --type-check",
     "build": "nest build",
     "start": "node dist/main",
     "start:prod": "node dist/main",
@@ -16,7 +16,6 @@
     "prisma:push": "prisma db push"
   },
   "dependencies": {
-    "@app/shared": "workspace:*",
     "@nestjs/common": "^11.0.5",
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.0.5",
@@ -24,17 +23,21 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.5",
     "@nestjs/swagger": "^11.0.3",
+    "@nestjs/throttler": "^6.5.0",
     "@prisma/client": "^6.3.1",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "helmet": "^8.1.0",
     "ioredis": "^5.4.2",
+    "joi": "^18.0.2",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
+    "@app/shared": "workspace:*",
     "@app/tsconfig": "workspace:*",
     "@nestjs/cli": "^11.0.2",
     "@nestjs/schematics": "^11.0.0",
@@ -42,6 +45,7 @@
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.1",
     "@types/passport-jwt": "^4.0.1",
+    "kill-port": "^2.0.1",
     "prisma": "^6.3.1",
     "source-map-support": "^0.5.21",
     "ts-loader": "^9.5.1",

@@ -1,17 +1,20 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
+import { PrismaClient, Prisma } from '@prisma/client';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
-  constructor() {
-    super({
-      log: ['query', 'info', 'warn', 'error'], // 开发时打印 SQL
-    });
+  constructor(private readonly configService: ConfigService) {
+    const isProduction = configService.get<string>('NODE_ENV') === 'production';
+    const logLevels: Prisma.LogLevel[] = isProduction
+      ? ['warn', 'error']
+      : ['query', 'info', 'warn', 'error'];
+
+    super({ log: logLevels });
   }
 
   async onModuleInit() {
     await this.$connect();
-    console.log('✅ Prisma connected to database');
   }
 
   async onModuleDestroy() {

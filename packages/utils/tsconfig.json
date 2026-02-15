@@ -1,0 +1,11 @@
+{
+  "extends": "@app/tsconfig/base.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["vite/client"],
+    "noEmit": true
+  },
+  "include": ["src"]
+}

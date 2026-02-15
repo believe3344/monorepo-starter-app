@@ -32,3 +32,9 @@ export enum UserRole {
   ADMIN = 'admin',
   USER = 'user',
 }
+
+/** 登录响应接口 */
+export interface ILoginResponse {
+  access_token: string;
+  user: UserInfo;
+}

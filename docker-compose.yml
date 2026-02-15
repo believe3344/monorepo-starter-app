@@ -35,7 +35,7 @@ services:
     command: >
       redis-server
       --appendonly yes
-      --requirepass redis123  # 设置连接密码为 redis123
+      --requirepass redis123
     volumes:
       - redis_data:/data
 

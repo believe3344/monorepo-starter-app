@@ -1,10 +1,10 @@
-import js from "@eslint/js";
-import prettierConfig from "eslint-config-prettier";
-import prettierPlugin from "eslint-plugin-prettier";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import globals from "globals";
-import tseslint from "typescript-eslint";
+import js from '@eslint/js';
+import prettierConfig from 'eslint-config-prettier';
+import prettierPlugin from 'eslint-plugin-prettier';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   // ===========================
@@ -12,11 +12,12 @@ export default tseslint.config(
   // ===========================
   {
     ignores: [
-      "**/dist/**",
-      "**/node_modules/**",
-      "**/.turbo/**",
-      "**/prisma/**",
-      "**/*.config.{js,mjs,cjs,ts}", // 配置文件不检查
+      '**/dist/**',
+      '**/node_modules/**',
+      '**/.turbo/**',
+      '**/prisma/**',
+      '**/*.config.{js,mjs,cjs,ts}', // 配置文件不检查
+      "packages/utils/src/**",
     ],
   },
 
@@ -35,21 +36,22 @@ export default tseslint.config(
     },
     rules: {
       // Prettier 作为 ESLint 规则
-      "prettier/prettier": "warn",
+      'prettier/prettier': 'warn',
 
       // TypeScript 规则调整
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
         {
-          argsIgnorePattern: "^_", // 忽略 _ 开头的参数
-          varsIgnorePattern: "^_", // 忽略 _ 开头的变量
+          argsIgnorePattern: '^_', // 忽略 _ 开头的参数
+          varsIgnorePattern: '^_', // 忽略 _ 开头的变量
           ignoreRestSiblings: true, // 解构时忽略剩余属性
         },
       ],
-      "@typescript-eslint/no-explicit-any": "warn", // any 类型警告而非报错
-      "@typescript-eslint/no-empty-object-type": "off",
-      "@typescript-eslint/no-empty-interface": "off",
-      "no-console": ["warn", { allow: ["warn", "error"] }], // 允许 console.warn/error
+      'react-refresh/only-export-components': 'off', // 限制 React Refresh 仅导出组件
+      '@typescript-eslint/no-explicit-any': 'warn', // any 类型警告而非报错
+      '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-empty-interface': 'off',
+      'no-console': ['warn', { allow: ['warn', 'error'] }], // 允许 console.warn/error
     },
   },
 
@@ -57,10 +59,10 @@ export default tseslint.config(
   // 4. React 应用专属规则（web + admin）
   // ===========================
   {
-    files: ["apps/web/src/**/*.{ts,tsx}", "apps/admin/src/**/*.{ts,tsx}"],
+    files: ['apps/web/src/**/*.{ts,tsx}', 'apps/admin/src/**/*.{ts,tsx}'],
     plugins: {
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
     },
     languageOptions: {
       globals: {
@@ -72,10 +74,7 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
 
       // React Refresh（HMR）规则
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
   },
 
@@ -83,7 +82,7 @@ export default tseslint.config(
   // 5. NestJS 服务端专属规则
   // ===========================
   {
-    files: ["apps/server/src/**/*.ts"],
+    files: ['apps/server/src/**/*.ts'],
     languageOptions: {
       globals: {
         ...globals.node, // process, __dirname, Buffer 等
@@ -91,24 +90,24 @@ export default tseslint.config(
     },
     rules: {
       // NestJS 大量用到装饰器和 any，放宽限制
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-floating-promises": "off",
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-floating-promises': 'off',
 
       // NestJS 的依赖注入 constructor 参数经常"未使用"
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
         {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
           ignoreRestSiblings: true,
         },
       ],
 
       // 允许 require()（NestJS 动态模块加载偶尔需要）
-      "@typescript-eslint/no-require-imports": "off",
+      '@typescript-eslint/no-require-imports': 'off',
 
       // 服务端允许 console.log（用于日志）
-      "no-console": "off",
+      'no-console': 'off',
     },
   },
 
@@ -116,7 +115,7 @@ export default tseslint.config(
   // 6. 共享包规则
   // ===========================
   {
-    files: ["packages/*/src/**/*.ts"],
+    files: ['packages/*/src/**/*.ts'],
     languageOptions: {
       globals: {
         ...globals.node,
