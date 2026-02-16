@@ -1,1 +1,1 @@
-export * from './uno.base';
+export * from './uno.base.ts';

@@ -1,7 +1,7 @@
 import { BaseUnoConfig } from '@app/uno-config';
 import { defineConfig } from 'unocss';
 import { mergeConfig } from 'vite';
-import { lightTheme } from './src/theme/customTheme';
+import { lightTheme } from './src/theme/customTheme.ts';
 
 // 辅助函数也需要修改
 function generateThemeColors(themeColors: typeof lightTheme.colors) {
