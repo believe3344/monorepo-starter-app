@@ -22,12 +22,6 @@ img {
   padding: 0;
 }
 
-html {
-  /* 设计稿宽度为1920px时，1rem = 100px（方便计算） */
-  font-size: calc(100vw / 19.2);
-  /* 1920/100 = 19.2 */
-}
-
 html,
 body,
 #app,
@@ -94,11 +88,13 @@ table {
 
 body {
   font:
-    12px Arial,
+    12px 'Noto Sans SC',
+    'Microsoft YaHei',
+    Arial,
     Verdana,
     '\5b8b\4f53';
   color: #666;
-  font-family: '微软雅黑';
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;

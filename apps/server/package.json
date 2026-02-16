@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "kill-port 4001 && nest start --watch --type-check",
+    "dev": "kill-port 4000 && nest start --watch --type-check",
     "build": "nest build",
     "start": "node dist/main",
     "start:prod": "node dist/main",

@@ -19,11 +19,8 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const hashedPassword = await this.passwordService.hash(registerDto.password);
-    const user = await this.userService.create({
-      ...registerDto,
-      password: hashedPassword,
-    });
+    // 密码加密逻辑已下沉到 UserService.create 中，此处直接透传
+    const user = await this.userService.create(registerDto);
     return user;
   }
 

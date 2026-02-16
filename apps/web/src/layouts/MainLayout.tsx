@@ -26,15 +26,8 @@ const MainLayout: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ display: 'flex', alignItems: 'center' }}>
-        <div
-          style={{
-            color: '#fff',
-            fontSize: 18,
-            fontWeight: 'bold',
-            marginRight: 40,
-          }}
-        >
+      <Header className="flex items-center px-4 md:px-6">
+        <div className="text-white text-base md:text-lg font-bold mr-4 md:mr-10 whitespace-nowrap">
           Monorepo Web
         </div>
         <Menu
@@ -43,10 +36,10 @@ const MainLayout: React.FC = () => {
           selectedKeys={[location.pathname]}
           items={menuItems}
           onClick={({ key }) => navigate(key)}
-          style={{ flex: 1 }}
+          className="flex-1 min-w-0"
         />
       </Header>
-      <Content style={{ padding: '24px 48px' }}>
+      <Content className="px-4 md:px-6 lg:px-12">
         <div
           style={{
             background: colorBgContainer,
@@ -54,13 +47,12 @@ const MainLayout: React.FC = () => {
             padding: 24,
             borderRadius: borderRadiusLG,
           }}
+          className="overflow-x-auto"
         >
           <Outlet />
         </div>
       </Content>
-      <Footer style={{ textAlign: 'center' }}>
-        Monorepo Starter App ©{new Date().getFullYear()}
-      </Footer>
+      <Footer className="text-center px-4">Monorepo Starter App ©{new Date().getFullYear()}</Footer>
     </Layout>
   );
 };

@@ -3,6 +3,7 @@ import About from '@/pages/About/Index';
 import Home from '@/pages/Home/Index';
 import Login from '@/pages/Login/Index';
 import NotFound from '@/pages/NotFound/Index';
+import Register from '@/pages/Register/Index';
 import { createBrowserRouter } from 'react-router-dom';
 
 const router = createBrowserRouter([
@@ -11,7 +12,7 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       {
-        index: true, // 默认子路由
+        index: true,
         element: <Home />,
       },
       {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/register',
+    element: <Register />,
   },
   {
     path: '*',

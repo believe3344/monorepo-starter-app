@@ -40,6 +40,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       exception instanceof Error ? exception.stack : '',
     );
 
-    response.status(status).json(fail(message, status));
+    response.status(HttpStatus.OK).json(fail(message, status));
   }
 }

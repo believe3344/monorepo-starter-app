@@ -1,7 +1,8 @@
 import { languageMap } from '@/locales/lang-lists';
 import { useGlobalStore } from '@/store';
 import { antdTheme } from '@/theme/antdTheme';
-import { ConfigProvider } from 'antd';
+import { fetch } from '@app/utils';
+import { App as AntdApp, ConfigProvider } from 'antd';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -10,6 +11,14 @@ import dayjs from 'dayjs';
 
 type ConfigProviderProps = {
   children: ReactNode;
+};
+
+const MessageInjector = ({ children }: { children: ReactNode }) => {
+  const { message } = AntdApp.useApp();
+  useEffect(() => {
+    fetch.setMessageInstance(message);
+  }, [message]);
+  return <>{children}</>;
 };
 
 const defaultLang = 'zh-CN';
@@ -46,7 +55,9 @@ export const AppConfigProvider: React.FC<ConfigProviderProps> = ({ children }) =
 
   return !isLoading ? (
     <ConfigProvider locale={locale} theme={antdTheme}>
-      {children}
+      <AntdApp>
+        <MessageInjector>{children}</MessageInjector>
+      </AntdApp>
     </ConfigProvider>
   ) : null;
 };

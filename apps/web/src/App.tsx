@@ -10,7 +10,7 @@ function App() {
   return (
     <AppConfigProvider>
       <ThemeProvider>
-        <SocketProviderContext url="ws://192.168.1.238:9095/JeemaaPortalSocket">
+        <SocketProviderContext url="">
           <RouterProvider router={router} />
         </SocketProviderContext>
       </ThemeProvider>

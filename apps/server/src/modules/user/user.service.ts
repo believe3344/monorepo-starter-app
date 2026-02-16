@@ -14,11 +14,18 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const existing = await this.prisma.user.findUnique({
-      where: { username: createUserDto.username },
+    const existing = await this.prisma.user.findFirst({
+      where: {
+        OR: [{ username: createUserDto.username }, { email: createUserDto.email }],
+      },
     });
     if (existing) {
-      throw new ConflictException('用户名已存在');
+      if (existing.username === createUserDto.username) {
+        throw new ConflictException('用户名已存在');
+      }
+      if (existing.email === createUserDto.email) {
+        throw new ConflictException('邮箱已存在');
+      }
     }
 
     const hashedPassword = await this.passwordService.hash(createUserDto.password);

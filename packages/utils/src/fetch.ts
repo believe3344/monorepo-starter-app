@@ -1,4 +1,4 @@
-import { message as Message } from 'antd';
+import type { MessageInstance } from 'antd/es/message/interface';
 import axios, {
   type AxiosInstance,
   type AxiosRequestConfig,
@@ -26,6 +26,7 @@ export interface IRequestConfig extends AxiosRequestConfig {
 
 class HttpRequest {
   private instance: AxiosInstance;
+  private messageInstance: MessageInstance | null = null;
 
   constructor() {
     this.instance = axios.create({
@@ -34,6 +35,10 @@ class HttpRequest {
       headers: {},
     });
     this.initInterceptors();
+  }
+
+  public setMessageInstance(message: MessageInstance) {
+    this.messageInstance = message;
   }
 
   // 初始化拦截器
@@ -61,13 +66,14 @@ class HttpRequest {
       (response: AxiosResponse<IResponseData>) => {
         if (response.status == 201 || response.status == 200) {
           const { code, message } = response.data;
+
           if ([200, 201].includes(Number(code)) || !code) {
             return Promise.resolve(response);
           } else {
             // 用户退出登录
             if ([222, 223, 224].includes(Number(code))) {
               source.cancel();
-              Message.error('您已掉线，请重新登录');
+              this.messageInstance?.error('您已掉线，请重新登录');
               storageUtil.remove('localStorage', 'token');
               storageUtil.remove('localStorage', 'user-store');
               window.location.replace('/login');
@@ -77,9 +83,9 @@ class HttpRequest {
             if (config.skipErrorHandler) {
               return Promise.reject(response.data);
             }
-
+            console.log('response.data', response.data);
             // 拦截错误信息
-            Message.error(message);
+            this.messageInstance?.error(message);
 
             return Promise.reject(response.data);
           }

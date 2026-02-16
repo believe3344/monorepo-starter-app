@@ -31,6 +31,6 @@ export class PrismaClientExceptionFilter implements ExceptionFilter {
         break;
     }
 
-    response.status(status).json(fail(message, status));
+    response.status(HttpStatus.OK).json(fail(message, status));
   }
 }
