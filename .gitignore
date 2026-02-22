@@ -17,7 +17,6 @@ build/
 *.idea
 *.turbo
 .DS_Store
-*.trae
 *.suo
 *.ntvs*
 *.njsproj

@@ -97,11 +97,11 @@ export const antdTheme = {
     },
     Menu: {
       // 菜单
-      colorItemBg: 'transparent',
-      colorItemBgSelected: '#F5F0E6',
-      colorItemBgHover: '#FAF7F2',
-      colorItemText: '#5D4037',
-      colorItemTextSelected: '#8B5A2B',
+      itemBg: 'transparent',
+      itemSelectedBg: '#F5F0E6',
+      itemHoverBg: '#FAF7F2',
+      itemColor: '#5D4037',
+      itemSelectedColor: '#8B5A2B',
       itemBorderRadius: 6,
     },
     Modal: {

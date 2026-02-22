@@ -23,8 +23,6 @@ const Register: React.FC = () => {
       } else {
         message.error(res.message || '注册失败');
       }
-    } catch (error: any) {
-      message.error(error.response?.data?.message || '请求失败，请稍后重试');
     } finally {
       setLoading(false);
     }
@@ -34,8 +32,8 @@ const Register: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#f5f0e6] p-1rem box-border">
       <div className="w-full max-w-100 bg-white rounded-lg shadow-lg p-1.5rem md:p-2rem">
         <div className="text-center mb-1.5rem md:mb-2rem">
-          <h1 className="text-11 text-[#3d3129] font-serif">本地小说阅读器</h1>
-          <p className="text-0.75rem md:text-0.875rem text-[#8b7355] mt-0.25rem md:mt-0.5rem">
+          <h1 className="text-4xl text-[#3d3129] font-serif">本地小说阅读器</h1>
+          <p className="text-xs md:text-base text-[#8b7355] mt-0.25rem md:mt-0.5rem">
             创建您的账户
           </p>
         </div>
@@ -103,7 +101,7 @@ const Register: React.FC = () => {
         </Form>
 
         <div className="text-center">
-          <Link to="/login" className="text-[#8b7355] hover:text-[#c9a86c]">
+          <Link to="/login" className="text-sm text-[#8b7355] hover:text-[#c9a86c]">
             已有账户？立即登录
           </Link>
         </div>

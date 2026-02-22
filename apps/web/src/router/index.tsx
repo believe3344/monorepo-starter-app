@@ -6,10 +6,16 @@ import NotFound from '@/pages/NotFound/Index';
 import Register from '@/pages/Register/Index';
 import { createBrowserRouter } from 'react-router-dom';
 
+import { AuthGuard, GuestGuard } from './Guard';
+
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <MainLayout />,
+    element: (
+      <AuthGuard>
+        <MainLayout />
+      </AuthGuard>
+    ),
     children: [
       {
         index: true,
@@ -23,11 +29,19 @@ const router = createBrowserRouter([
   },
   {
     path: '/login',
-    element: <Login />,
+    element: (
+      <GuestGuard>
+        <Login />
+      </GuestGuard>
+    ),
   },
   {
     path: '/register',
-    element: <Register />,
+    element: (
+      <GuestGuard>
+        <Register />
+      </GuestGuard>
+    ),
   },
   {
     path: '*',

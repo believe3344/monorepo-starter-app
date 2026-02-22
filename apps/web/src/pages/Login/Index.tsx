@@ -1,6 +1,7 @@
 import { loginWithPass } from '@/api/common';
 import { useUserStore } from '@/store';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { storageUtil } from '@app/utils';
 import { Button, Form, Input, message } from 'antd';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -20,7 +21,7 @@ const Login: React.FC = () => {
       if (res.code === 200) {
         message.success('登录成功');
         setUserInfo(res.result);
-        localStorage.setItem('token', res.result.access_token);
+        storageUtil.set('localStorage', 'token', res.result.access_token);
         navigate('/');
       } else {
         message.error(res.message || '用户名或密码错误');
@@ -36,10 +37,8 @@ const Login: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#f5f0e6] p-1rem box-border">
       <div className="w-full max-w-100 bg-white rounded-lg shadow-lg p-1.5rem md:p-2rem">
         <div className="text-center mb-1.5rem md:mb-2rem">
-          <h1 className="text-11 text-[#3d3129] font-serif">本地小说阅读器</h1>
-          <p className="text-0.75rem md:text-0.875rem text-[#8b7355] mt-0.25rem md:mt-0.5rem">
-            欢迎回来
-          </p>
+          <h1 className="text-4xl text-[#3d3129] font-serif">本地小说阅读器</h1>
+          <p className="text-xs md:text-base text-[#8b7355] mt-0.25rem md:mt-0.5rem">欢迎回来</p>
         </div>
 
         <Form name="login" onFinish={onFinish} autoComplete="off" size="large">
@@ -65,7 +64,7 @@ const Login: React.FC = () => {
         </Form>
 
         <div className="text-center">
-          <Link to="/register" className="text-[#8b7355] hover:text-[#c9a86c]">
+          <Link to="/register" className="text-sm text-[#8b7355] hover:text-[#c9a86c]">
             还没有账户？立即注册
           </Link>
         </div>

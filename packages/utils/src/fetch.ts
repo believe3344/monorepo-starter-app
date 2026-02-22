@@ -49,8 +49,10 @@ class HttpRequest {
         const langs: { [key: string]: any } = { 'zh-CN': 'zh-cn' };
         const localLang = localStorage.getItem('i18nextLng') || 'zh-CN';
         config.headers['Accept-Language'] = langs[localLang] || localLang;
-        config.headers['Authorization'] = token;
-        config.headers['token'] = token;
+        if (token) {
+          config.headers['Authorization'] = `Bearer ${token}`;
+          config.headers['token'] = token;
+        }
         config.cancelToken = source.token;
 
         return config;
@@ -71,7 +73,7 @@ class HttpRequest {
             return Promise.resolve(response);
           } else {
             // 用户退出登录
-            if ([222, 223, 224].includes(Number(code))) {
+            if ([401].includes(Number(code))) {
               source.cancel();
               this.messageInstance?.error('您已掉线，请重新登录');
               storageUtil.remove('localStorage', 'token');

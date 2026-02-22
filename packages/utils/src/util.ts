@@ -128,18 +128,6 @@ export const uuid = () => {
   });
 };
 
-// token
-export const getToken = () => {
-  const token = localStorage.getItem('ymw_token') as string;
-  return token;
-};
-
-// 获取用户信息
-export const getUserInfo = () => {
-  const common = JSON.parse(sessionStorage.getItem('common') as string);
-  return common?.userInfo?.userInfo;
-};
-
 // 判断字符串为空或全部为空格
 export const isEmpty = (str: string) => {
   return str.match(/^[ ]*$/);
