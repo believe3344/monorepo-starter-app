@@ -256,7 +256,7 @@ const NovelWorkspace: React.FC = () => {
             <InboxOutlined className="text-[#1890ff] !text-[70px]" />
           </p>
           <p className="ant-upload-text text-xl font-medium">点击或拖拽文件到此处上传</p>
-          <p className="ant-upload-hint text-gray-500">
+          <p className="ant-upload-hint text-gray-500 mb-[10px]">
             支持 .txt 格式，自动解析章节，实时推送到书架
           </p>
         </Dragger>
