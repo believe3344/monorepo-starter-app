@@ -252,8 +252,8 @@ const NovelWorkspace: React.FC = () => {
       {/* Top: Upload Area */}
       <Card className="shadow-sm rounded-xl border-none [&>.ant-card-body]:p-8">
         <Dragger {...uploadProps} className="rounded-2xl bg-gray-50">
-          <p className="ant-upload-drag-icon">
-            <InboxOutlined className="text-[#1890ff] text-5xl" />
+          <p className="ant-upload-drag-icon !mb-[20px] !mt-[15px]">
+            <InboxOutlined className="text-[#1890ff] !text-[70px]" />
           </p>
           <p className="ant-upload-text text-xl font-medium">点击或拖拽文件到此处上传</p>
           <p className="ant-upload-hint text-gray-500">
