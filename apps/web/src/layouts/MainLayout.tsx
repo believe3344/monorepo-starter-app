@@ -1,16 +1,10 @@
-import { Layout, theme } from 'antd';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Layout } from 'antd';
+import { Outlet } from 'react-router-dom';
 import AppHeader from './components/AppHeader';
 
 const { Content, Footer } = Layout;
 
 const MainLayout: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
-
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <AppHeader />
@@ -19,7 +13,9 @@ const MainLayout: React.FC = () => {
           <Outlet />
         </div>
       </Content>
-      <Footer className="text-center px-4">Monorepo Starter App ©{new Date().getFullYear()}</Footer>
+      <Footer className="text-center px-2 py-3">
+        Monorepo Starter App ©{new Date().getFullYear()}
+      </Footer>
     </Layout>
   );
 };
