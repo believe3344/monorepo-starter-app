@@ -13,3 +13,8 @@ export const loginWithPass = (data: LoginDto) => {
 export const register = (data: CreateUserDto) => {
   return fetch.post<ApiResponse<ILoginResponse>>('/auth/register', data);
 };
+
+// 退出登录
+export const logout = () => {
+  return fetch.post<ApiResponse<null>>('/auth/logout');
+};

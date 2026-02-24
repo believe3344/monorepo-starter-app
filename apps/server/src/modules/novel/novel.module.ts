@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
-import { NovelController } from './novel.controller';
-import { NovelService } from './novel.service';
-import { PrismaModule } from '../../prisma/prisma.module';
 import { BullModule } from '@nestjs/bull';
+import { Module } from '@nestjs/common';
+import { PrismaModule } from '../../prisma/prisma.module';
+import { NovelController } from './novel.controller';
+import { NovelGateway } from './novel.gateway';
 import { NovelProcessor } from './novel.processor';
+import { NovelService } from './novel.service';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { NovelProcessor } from './novel.processor';
     }),
   ],
   controllers: [NovelController],
-  providers: [NovelService, NovelProcessor],
+  providers: [NovelService, NovelProcessor, NovelGateway],
+  exports: [NovelGateway],
 })
 export class NovelModule {}

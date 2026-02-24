@@ -30,19 +30,6 @@ const NovelList: React.FC = () => {
 
   useEffect(() => {
     fetchNovels();
-    // Polling status every 5s if any novel is processing
-    const interval = setInterval(() => {
-      // Only poll if there are processing novels to save bandwidth
-      // But for simplicity, we poll to update status
-      getNovels()
-        .then((res) => {
-          if (res.code === 200) {
-            setNovels(res.result);
-          }
-        })
-        .catch(() => {});
-    }, 5000);
-    return () => clearInterval(interval);
   }, []);
 
   const getStatusTag = (status: string) => {
@@ -65,8 +52,8 @@ const NovelList: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: 24 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24 }}>
+    <div className="p-6">
+      <div className="flex justify-between mb-6">
         <Title level={2}>我的书架</Title>
         <Button type="primary" onClick={() => navigate('/novels/upload')}>
           上传小说

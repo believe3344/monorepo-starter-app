@@ -1,3 +1,4 @@
+import { SocketMessageType } from '@app/shared';
 import { Process, Processor } from '@nestjs/bull';
 import { NovelStatus } from '@prisma/client';
 import type { Job } from 'bull';
@@ -6,6 +7,7 @@ import * as iconv from 'iconv-lite';
 import * as jschardet from 'jschardet';
 import * as readline from 'readline';
 import { PrismaService } from '../../prisma/prisma.service';
+import { NovelGateway } from './novel.gateway';
 
 /**
  * 小说异步处理器
@@ -13,7 +15,10 @@ import { PrismaService } from '../../prisma/prisma.service';
  */
 @Processor('novel-processing')
 export class NovelProcessor {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private novelGateway: NovelGateway,
+  ) {}
 
   /**
    * 处理小说解析任务
@@ -25,8 +30,8 @@ export class NovelProcessor {
    * 6. 删除源文件
    */
   @Process('process-novel')
-  async handleTranscode(job: Job<{ novelId: number; filepath: string }>) {
-    const { novelId, filepath } = job.data;
+  async handleTranscode(job: Job<{ novelId: number; filepath: string; clientId?: string }>) {
+    const { novelId, filepath, clientId } = job.data;
     console.log(`Start processing novel ${novelId} from ${filepath}...`);
 
     try {
@@ -35,6 +40,12 @@ export class NovelProcessor {
         where: { id: novelId },
         data: { status: NovelStatus.PROCESSING },
       });
+
+      if (clientId) {
+        this.novelGateway.sendToClient(clientId, SocketMessageType.NOVEL_Processing, '开始解析', {
+          novelId,
+        });
+      }
 
       // 1. 检测文件编码 (读取前 4KB)
       const fd = fs.openSync(filepath, 'r');
@@ -76,21 +87,21 @@ export class NovelProcessor {
         order: number;
         wordCount: number;
       }[] = [];
-      const BATCH_SIZE = 50;
+      const BATCH_SIZE = 10; // Reduce batch size for faster real-time updates
 
       // 章节标题正则匹配
-      // 支持: "第1章", "第一章", "Chapter 1" 等常见格式
-      const chapterRegex =
-        /(?:^\s*第\s*[0-9一二三四五六七八九十百千万]+\s*章)|(?:^\s*Chapter\s+\d+)/;
+      // 放宽限制以支持 "正文 第1章"、"VIP卷 第1章" 等格式，不强制行首
+      const chapterRegex = /(?:第\s*[0-9一二三四五六七八九十百千万]+\s*章)|(?:Chapter\s+\d+)/;
 
       for await (const line of rl) {
-        if (chapterRegex.test(line)) {
+        // 增加行长度检查 (< 100)，防止正文中出现的 "第x章" 被误判为标题
+        if (line.length < 100 && chapterRegex.test(line)) {
           // 如果已有当前章节，先保存到缓冲区
           if (currentChapter) {
             bufferChapters.push(currentChapter);
             // 缓冲区满，批量写入数据库
             if (bufferChapters.length >= BATCH_SIZE) {
-              await this.saveChapters(bufferChapters, novelId);
+              await this.saveChapters(bufferChapters, novelId, clientId);
               bufferChapters = [];
             }
           }
@@ -116,7 +127,7 @@ export class NovelProcessor {
         bufferChapters.push(currentChapter);
       }
       if (bufferChapters.length > 0) {
-        await this.saveChapters(bufferChapters, novelId);
+        await this.saveChapters(bufferChapters, novelId, clientId);
       }
 
       // 3. 完成处理
@@ -124,6 +135,11 @@ export class NovelProcessor {
         where: { id: novelId },
         data: { status: NovelStatus.COMPLETED },
       });
+      if (clientId) {
+        this.novelGateway.sendToClient(clientId, SocketMessageType.NOVEL_Completed, '解析完成', {
+          novelId,
+        });
+      }
       console.log(`Novel ${novelId} processing completed.`);
 
       // 4. 删除源文件
@@ -135,21 +151,50 @@ export class NovelProcessor {
         where: { id: novelId },
         data: { status: NovelStatus.FAILED },
       });
+      if (clientId) {
+        this.novelGateway.sendToClient(clientId, SocketMessageType.NOVEL_Failed, '解析失败', {
+          novelId,
+          error: String(error),
+        });
+      }
       // 即使失败也删除文件
       this.deleteFile(filepath);
     }
   }
 
   // 批量保存章节到数据库
-  private async saveChapters(chapters: any[], novelId: number) {
+  private async saveChapters(chapters: any[], novelId: number, clientId?: string) {
     if (chapters.length === 0) return;
     try {
+      // 批量创建
       await this.prisma.chapter.createMany({
         data: chapters.map((c) => ({
           ...c,
           novelId,
         })),
       });
+
+      // 发送进度通知
+      if (clientId) {
+        // 查询刚刚保存的章节以获取 ID
+        const savedChapters = await this.prisma.chapter.findMany({
+          where: {
+            novelId,
+            order: {
+              gte: chapters[0].order,
+              lte: chapters[chapters.length - 1].order,
+            },
+          },
+          select: { id: true, title: true, order: true, wordCount: true, novelId: true },
+        });
+
+        this.novelGateway.sendToClient(
+          clientId,
+          SocketMessageType.NOVEL_ChapterUpdate,
+          '章节更新',
+          savedChapters,
+        );
+      }
     } catch (e) {
       console.error('Failed to save chapters batch', e);
       throw e;

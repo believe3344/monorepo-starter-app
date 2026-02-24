@@ -5,14 +5,7 @@ const NotFound: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-      }}
-    >
+    <div className="flex justify-center items-center h-100vh">
       <Result
         status="404"
         title="404"

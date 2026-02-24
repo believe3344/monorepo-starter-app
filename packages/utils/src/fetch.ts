@@ -53,6 +53,13 @@ class HttpRequest {
           config.headers['Authorization'] = `Bearer ${token}`;
           config.headers['token'] = token;
         }
+
+        // 自动携带 WebSocket ClientId (如果存在)
+        const clientId = storageUtil.get('sessionStorage', 'clientId');
+        if (clientId) {
+          config.headers['x-client-id'] = clientId;
+        }
+
         config.cancelToken = source.token;
 
         return config;

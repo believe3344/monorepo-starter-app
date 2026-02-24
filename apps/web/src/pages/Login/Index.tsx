@@ -22,7 +22,7 @@ const Login: React.FC = () => {
         message.success('登录成功');
         setUserInfo(res.result);
         storageUtil.set('localStorage', 'token', res.result.access_token);
-        navigate('/');
+        navigate('/novels');
       } else {
         message.error(res.message || '用户名或密码错误');
       }

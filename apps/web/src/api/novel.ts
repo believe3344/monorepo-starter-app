@@ -1,7 +1,8 @@
 import { ApiResponse, ChapterDto, NovelDto, NovelStatus } from '@app/shared';
 import { fetch } from '@app/utils';
 
-export type { ChapterDto, NovelDto, NovelStatus };
+export { NovelStatus };
+export type { ChapterDto, NovelDto };
 
 // Upload Novel
 export const uploadNovel = (file: File, title?: string) => {
@@ -34,4 +35,9 @@ export const getChapters = (novelId: number) => {
 // Get Chapter Content
 export const getChapterContent = (chapterId: number) => {
   return fetch.get<ApiResponse<ChapterDto>>(`/novels/chapters/${chapterId}`);
+};
+
+// Delete Novel
+export const deleteNovel = (id: number) => {
+  return fetch.delete<ApiResponse<void>>(`/novels/${id}`);
 };

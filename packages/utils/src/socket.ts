@@ -54,7 +54,7 @@ export interface SocketMessage {
   timeStamp?: number;
   message: string;
   index?: number;
-  type?: number;
+  type: number;
   uuid?: string;
   result?: any;
 }
@@ -126,10 +126,7 @@ export class Socket {
       clientId = uuid();
       storageUtil.set('sessionStorage', 'clientId', clientId);
     }
-    const websocket = new WebSocket(
-      `${this.url}/websocket?clientId=${clientId}`,
-      token ? [token] : [],
-    );
+    const websocket = new WebSocket(`${this.url}/websocket?clientId=${clientId}`);
 
     // 心跳对象
     this.heartCheck = new HeartCheck({ websocket });
@@ -146,7 +143,17 @@ export class Socket {
             // 拼接socket分割数据
             this.spliceSocketSplitData(res);
           } else {
-            const content = JSON.parse(res.content as string) as SocketMessage;
+            let content: SocketMessage;
+            if (res.content && typeof res.content === 'string') {
+              try {
+                content = JSON.parse(res.content) as SocketMessage;
+              } catch (error) {
+                content = res;
+              }
+            } else {
+              content = res;
+            }
+
             if (content.type === 0) {
               if (content.result?.socketId) {
                 // 如果报错说明是第一次挂载（避免重复创建Vue实例）
@@ -222,6 +229,11 @@ export class Socket {
         this.send(data);
       }, 1000);
     }
+  }
+
+  // 获取当前clientId
+  getClientId(): string | null {
+    return storageUtil.get('sessionStorage', 'clientId');
   }
 
   // 关闭socket连接

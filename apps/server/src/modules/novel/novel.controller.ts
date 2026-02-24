@@ -2,7 +2,9 @@ import { CreateNovelDto } from '@app/shared';
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Headers,
   Param,
   Post,
   Request,
@@ -36,12 +38,15 @@ export class NovelController {
         },
         filename: (req: any, file: any, cb: any) => {
           const randomName = uuidv4();
-          cb(null, `${randomName}${extname(file.originalname)}`);
+          // Fix utf-8 chars in filename
+          const originalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+          cb(null, `${randomName}${extname(originalName)}`);
         },
       }),
       fileFilter: (req: any, file: any, cb: any) => {
         // Allow txt and maybe others in future
-        if (file.mimetype === 'text/plain' || file.originalname.endsWith('.txt')) {
+        const originalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+        if (file.mimetype === 'text/plain' || originalName.endsWith('.txt')) {
           cb(null, true);
         } else {
           cb(new Error('Only .txt files are allowed!'), false);
@@ -56,11 +61,12 @@ export class NovelController {
     @UploadedFile() file: Express.Multer.File,
     @Body() body: CreateNovelDto,
     @Request() req: any,
+    @Headers('x-client-id') clientId: string,
   ) {
     if (!file) {
       throw new Error('File is required');
     }
-    return this.novelService.createNovel(file, body.title || '', req.user.userId);
+    return this.novelService.createNovel(file, body.title || '', req.user.userId, clientId);
   }
 
   @Get()
@@ -85,5 +91,11 @@ export class NovelController {
   @UseGuards(JwtAuthGuard)
   async getChapterContent(@Param('id') id: string) {
     return this.novelService.getChapterContent(+id);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  async remove(@Param('id') id: string, @Request() req: any) {
+    return this.novelService.remove(+id, req.user.userId);
   }
 }

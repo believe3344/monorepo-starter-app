@@ -6,4 +6,7 @@ export const createUserActions: ActionsCreator<UserSlice, UserActions> = (set, _
   setUserInfo: (data: ILoginResponse) => {
     setState(set, { userInfo: data });
   },
+  clearUserInfo: () => {
+    setState(set, { userInfo: null });
+  },
 });

@@ -1,13 +1,10 @@
 import MainLayout from '@/layouts/MainLayout';
-import About from '@/pages/About/Index';
-import Home from '@/pages/Home/Index';
 import Login from '@/pages/Login/Index';
 import NotFound from '@/pages/NotFound/Index';
-import Register from '@/pages/Register/Index';
-import NovelList from '@/pages/Novel/List';
-import NovelUpload from '@/pages/Novel/Upload';
 import NovelRead from '@/pages/Novel/Read';
-import { createBrowserRouter } from 'react-router-dom';
+import NovelWorkspace from '@/pages/Novel/Workspace';
+import Register from '@/pages/Register/Index';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import { AuthGuard, GuestGuard } from './Guard';
 
@@ -22,24 +19,16 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
-      },
-      {
-        path: 'about',
-        element: <About />,
+        element: <Navigate to="/novels" replace />,
       },
       {
         path: 'novels',
-        element: <NovelList />,
-      },
-      {
-        path: 'novels/upload',
-        element: <NovelUpload />,
+        element: <NovelWorkspace />,
       },
     ],
   },
   {
-    path: '/novels/:id',
+    path: '/novels/read/:id',
     element: (
       <AuthGuard>
         <NovelRead />

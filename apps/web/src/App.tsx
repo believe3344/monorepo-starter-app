@@ -8,7 +8,7 @@ function App() {
   return (
     <AppConfigProvider>
       <ThemeProvider>
-        <SocketProviderContext url="">
+        <SocketProviderContext url="ws://localhost:4000">
           <RouterProvider router={router} />
         </SocketProviderContext>
       </ThemeProvider>

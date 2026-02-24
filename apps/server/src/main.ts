@@ -7,6 +7,7 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { PrismaClientExceptionFilter } from './common/filters/prisma-client-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { WsAdapter } from '@nestjs/platform-ws';
 
 declare const module: any;
 
@@ -14,6 +15,9 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+
+  // Enable WebSocket Adapter
+  app.useWebSocketAdapter(new WsAdapter(app));
 
   // 全局前缀：所有接口以 /api 开头
   app.setGlobalPrefix('api');

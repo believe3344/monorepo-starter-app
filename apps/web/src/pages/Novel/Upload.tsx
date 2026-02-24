@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Upload, Button, message, Card, Form, Input } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { uploadNovel } from '../../api/novel';
+import { Button, Card, Form, Input, message, Upload } from 'antd';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { uploadNovel } from '../../api/novel';
 
 const NovelUpload: React.FC = () => {
   const [fileList, setFileList] = useState<any[]>([]);
@@ -59,7 +59,7 @@ const NovelUpload: React.FC = () => {
   };
 
   return (
-    <Card title="上传小说" style={{ maxWidth: 600, margin: '20px auto' }}>
+    <Card title="上传小说" className="max-w-600px mx-auto my-5">
       <Form form={form} layout="vertical">
         <Form.Item label="选择文件">
           <Upload {...props} maxCount={1}>
@@ -80,7 +80,7 @@ const NovelUpload: React.FC = () => {
           onClick={handleUpload}
           disabled={fileList.length === 0}
           loading={uploading}
-          style={{ marginTop: 16 }}
+          className="mt-4"
           block
         >
           {uploading ? '上传中' : '开始上传'}

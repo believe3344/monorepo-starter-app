@@ -1,12 +1,12 @@
+import { PasswordService } from '@/common/services/password.service';
+import { PrismaService } from '@/prisma/prisma.service';
+import { ILoginResponse, UserRole } from '@app/shared';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '@/prisma/prisma.service';
 import { UserService } from '../user/user.service';
-import { PasswordService } from '@/common/services/password.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { ILoginResponse, UserRole } from '@app/shared';
 
 @Injectable()
 export class AuthService {
@@ -51,5 +51,10 @@ export class AuthService {
         updatedAt: user.updatedAt.toISOString(),
       },
     };
+  }
+
+  async logout(userId: number) {
+    // TODO: 如果需要，可以在这里将 token 加入 Redis 黑名单
+    return true;
   }
 }

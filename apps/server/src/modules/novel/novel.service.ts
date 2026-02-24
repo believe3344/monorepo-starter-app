@@ -2,6 +2,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { NovelStatus } from '@prisma/client';
 import type { Queue } from 'bull';
+import * as fs from 'fs';
 import { PrismaService } from '../../prisma/prisma.service';
 
 /**
@@ -16,15 +17,56 @@ export class NovelService {
   ) {}
 
   /**
+   * 删除小说
+   * @param id 小说 ID
+   * @param userId 用户 ID (用于鉴权)
+   */
+  async remove(id: number, userId: number) {
+    const novel = await this.prisma.novel.findUnique({
+      where: { id },
+    });
+
+    if (!novel) {
+      throw new NotFoundException(`Novel #${id} not found`);
+    }
+
+    if (novel.uploaderId !== userId) {
+      // 简单鉴权：只有上传者可以删除
+      throw new NotFoundException(`You are not authorized to delete this novel`);
+    }
+
+    // 删除关联文件
+    if (novel.filepath && fs.existsSync(novel.filepath)) {
+      try {
+        fs.unlinkSync(novel.filepath);
+      } catch (err) {
+        console.error(`Failed to delete file: ${novel.filepath}`, err);
+      }
+    }
+
+    // 删除数据库记录 (关联的章节会因为 onDelete: Cascade 自动删除)
+    return this.prisma.novel.delete({
+      where: { id },
+    });
+  }
+
+  /**
    * 创建小说（上传后初始化）
    * 1. 在数据库创建记录
    * 2. 将文件解析任务加入队列
    * @param file 上传的文件对象
    * @param title 小说标题
    * @param uploaderId 上传者 ID
+   * @param clientId 客户端 WebSocket ID
    */
-  async createNovel(file: Express.Multer.File, title: string, uploaderId: number) {
-    const novelTitle = title || file.originalname.replace(/\.txt$/, '');
+  async createNovel(
+    file: Express.Multer.File,
+    title: string,
+    uploaderId: number,
+    clientId?: string,
+  ) {
+    const originalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+    const novelTitle = title || originalName.replace(/\.txt$/, '');
 
     // 1. 创建小说记录
     const novel = await this.prisma.novel.create({
@@ -40,6 +82,7 @@ export class NovelService {
     await this.novelQueue.add('process-novel', {
       novelId: novel.id,
       filepath: file.path,
+      clientId,
     });
 
     return {
@@ -83,6 +126,7 @@ export class NovelService {
         title: true,
         order: true,
         wordCount: true,
+        novelId: true,
         // 排除 content 字段以提升性能
       },
       orderBy: { order: 'asc' },
