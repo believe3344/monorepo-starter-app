@@ -12,6 +12,7 @@ build/
 
 # Editor directories and files
 .vscode/*
+.trae/*
 !.vscode/settings.json
 !.vscode/extensions.json
 *.idea

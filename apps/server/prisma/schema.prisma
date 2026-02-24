@@ -15,6 +15,47 @@ model User {
   role      String   @default("user") @db.VarChar(20)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  novels    Novel[]
 
   @@map("users") // 数据库表名用小写复数
+}
+
+enum NovelStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Novel {
+  id          Int         @id @default(autoincrement())
+  title       String      @db.VarChar(255)
+  author      String?     @db.VarChar(100)
+  description String?     @db.Text
+  filepath    String      @db.VarChar(255)
+  status      NovelStatus @default(PENDING)
+  uploaderId  Int         @map("uploader_id")
+  uploader    User        @relation(fields: [uploaderId], references: [id])
+  chapters    Chapter[]
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  @@index([uploaderId])
+  @@map("novels")
+}
+
+model Chapter {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(255)
+  content   String   @db.LongText
+  order     Int
+  wordCount Int      @default(0) @map("word_count")
+  novelId   Int      @map("novel_id")
+  novel     Novel    @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([novelId])
+  @@index([novelId, order])
+  @@map("chapters")
 }

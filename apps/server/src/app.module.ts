@@ -1,3 +1,4 @@
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
@@ -8,6 +9,7 @@ import { AppService } from './app.service';
 import { RedisModule } from './common/redis/redis.module';
 import { PasswordModule } from './common/services/password.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { NovelModule } from './modules/novel/novel.module';
 import { UserModule } from './modules/user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 
@@ -32,12 +34,12 @@ import { PrismaModule } from './prisma/prisma.module';
           {
             name: 'short',
             ttl: 1000,
-            limit: 3,
+            limit: 10,
           },
           {
             name: 'medium',
             ttl: 10000,
-            limit: 20,
+            limit: 50,
           },
           {
             name: 'long',
@@ -48,11 +50,23 @@ import { PrismaModule } from './prisma/prisma.module';
       }),
       inject: [ConfigService],
     }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get('REDIS_HOST'),
+          port: configService.get('REDIS_PORT'),
+          password: configService.get('REDIS_PASSWORD'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
     PrismaModule,
     PasswordModule,
     RedisModule,
     UserModule,
     AuthModule,
+    NovelModule,
   ],
   controllers: [AppController],
   providers: [
