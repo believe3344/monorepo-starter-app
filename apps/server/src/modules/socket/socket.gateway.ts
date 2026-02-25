@@ -1,4 +1,3 @@
-import { SocketMessage } from '@app/shared';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -6,18 +5,21 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { IncomingMessage } from 'http';
-import { v4 as uuidv4 } from 'uuid';
 import { WebSocket } from 'ws';
 
 @WebSocketGateway({
   path: '/websocket',
 })
-export class NovelGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: any;
 
   private clients: Map<string, WebSocket> = new Map();
 
+  /**
+   * 客户端连接处理
+   * 从 URL 中提取 clientId 并保存连接
+   */
   handleConnection(client: WebSocket, request: IncomingMessage) {
     const url = new URL(request.url || '', `http://${request.headers.host}`);
     const clientId = url.searchParams.get('clientId');
@@ -27,7 +29,7 @@ export class NovelGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.log(`Client connected: ${clientId}`);
     }
 
-    // Heartbeat mechanism
+    // 心跳机制
     client.on('message', (data) => {
       const message = data.toString();
       if (message === 'ping') {
@@ -38,6 +40,9 @@ export class NovelGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
+  /**
+   * 客户端断开连接处理
+   */
   handleDisconnect(client: WebSocket) {
     for (const [id, socket] of this.clients.entries()) {
       if (socket === client) {
@@ -48,18 +53,13 @@ export class NovelGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  sendToClient(clientId: string, type: number, message: string, result: any) {
+  /**
+   * 发送消息到底层 Socket
+   */
+  send(clientId: string, data: any) {
     const client = this.clients.get(clientId);
     if (client && client.readyState === WebSocket.OPEN) {
-      const payload: SocketMessage = {
-        code: 200,
-        message,
-        type,
-        result,
-        timeStamp: Date.now(),
-        uuid: uuidv4(),
-      };
-      client.send(JSON.stringify(payload));
+      client.send(JSON.stringify(data));
     }
   }
 }

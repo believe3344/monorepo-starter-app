@@ -10,6 +10,7 @@ import { RedisModule } from './common/redis/redis.module';
 import { PasswordModule } from './common/services/password.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { NovelModule } from './modules/novel/novel.module';
+import { SocketModule } from './modules/socket/socket.module';
 import { UserModule } from './modules/user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 
@@ -67,6 +68,7 @@ import { PrismaModule } from './prisma/prisma.module';
     UserModule,
     AuthModule,
     NovelModule,
+    SocketModule,
   ],
   controllers: [AppController],
   providers: [

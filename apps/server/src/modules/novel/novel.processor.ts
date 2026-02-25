@@ -7,7 +7,7 @@ import * as iconv from 'iconv-lite';
 import * as jschardet from 'jschardet';
 import * as readline from 'readline';
 import { PrismaService } from '../../prisma/prisma.service';
-import { NovelGateway } from './novel.gateway';
+import { SocketService } from '../socket/socket.service';
 
 /**
  * 小说异步处理器
@@ -17,7 +17,7 @@ import { NovelGateway } from './novel.gateway';
 export class NovelProcessor {
   constructor(
     private prisma: PrismaService,
-    private novelGateway: NovelGateway,
+    private socketService: SocketService,
   ) {}
 
   /**
@@ -42,8 +42,10 @@ export class NovelProcessor {
       });
 
       if (clientId) {
-        this.novelGateway.sendToClient(clientId, SocketMessageType.NOVEL_Processing, '开始解析', {
-          novelId,
+        this.socketService.sendMessage(clientId, {
+          type: SocketMessageType.NOVEL_Processing,
+          message: '开始解析',
+          result: { novelId },
         });
       }
 
@@ -136,8 +138,10 @@ export class NovelProcessor {
         data: { status: NovelStatus.COMPLETED },
       });
       if (clientId) {
-        this.novelGateway.sendToClient(clientId, SocketMessageType.NOVEL_Completed, '解析完成', {
-          novelId,
+        this.socketService.sendMessage(clientId, {
+          type: SocketMessageType.NOVEL_Completed,
+          message: '解析完成',
+          result: { novelId },
         });
       }
       console.log(`Novel ${novelId} processing completed.`);
@@ -152,9 +156,14 @@ export class NovelProcessor {
         data: { status: NovelStatus.FAILED },
       });
       if (clientId) {
-        this.novelGateway.sendToClient(clientId, SocketMessageType.NOVEL_Failed, '解析失败', {
-          novelId,
-          error: String(error),
+        this.socketService.sendMessage(clientId, {
+          type: SocketMessageType.NOVEL_Failed,
+          message: '解析失败',
+          code: 500,
+          result: {
+            novelId,
+            error: String(error),
+          },
         });
       }
       // 即使失败也删除文件
@@ -188,12 +197,11 @@ export class NovelProcessor {
           select: { id: true, title: true, order: true, wordCount: true, novelId: true },
         });
 
-        this.novelGateway.sendToClient(
-          clientId,
-          SocketMessageType.NOVEL_ChapterUpdate,
-          '章节更新',
-          savedChapters,
-        );
+        this.socketService.sendMessage(clientId, {
+          type: SocketMessageType.NOVEL_ChapterUpdate,
+          message: '章节更新',
+          result: savedChapters,
+        });
       }
     } catch (e) {
       console.error('Failed to save chapters batch', e);
